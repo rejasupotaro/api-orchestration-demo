@@ -1,0 +1,2 @@
+guard: bundle exec guard
+rails: rails s
