@@ -1,12 +1,12 @@
 package com.example.spark.services;
 
-import com.example.spark.resources.Recipe;
+import com.example.spark.resources.BookmarkTag;
 import rx.Observable;
 
-public class RecipeService {
-    public static Observable<Recipe> get(String id) {
+public class BookmarkTagService {
+    public static Observable<BookmarkTag> get(String id) {
         return Observable.create(observer -> {
-            Recipe recipe = new Recipe();
+            BookmarkTag recipe = new BookmarkTag();
             observer.onNext(recipe);
             observer.onCompleted();
         });

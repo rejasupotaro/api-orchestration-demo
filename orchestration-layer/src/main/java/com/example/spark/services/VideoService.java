@@ -10,7 +10,7 @@ import rx.Observable;
 import java.io.IOException;
 
 public class VideoService {
-    public static Observable<Video> getVideos(String recipeId) {
+    public static Observable<Video> get(String recipeId) {
         return Observable.create(observer -> {
             Video video = getVideoFromNetwork(recipeId);
             observer.onNext(video);
