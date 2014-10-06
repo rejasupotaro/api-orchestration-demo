@@ -1,21 +1,37 @@
 package com.example.spark;
 
-import static spark.Spark.*;
-
 import com.example.spark.resources.Recipe;
-import com.example.spark.resources.UserResource;
 import com.example.spark.resources.Video;
 import com.example.spark.services.VideoService;
 import rx.Observable;
-import rx.functions.Action1;
 import spark.servlet.SparkApplication;
 
-import java.util.HashMap;
-import java.util.concurrent.CountDownLatch;
+import static spark.Spark.get;
 
 public class App implements SparkApplication {
     @Override
     public void init() {
+        get("/", (req, res) -> {
+            final String[] body = {""};
+
+            String[] data = new String[]{"a", "b", "c"};
+            Observable.from(data)
+                    .map((n) -> {
+                        return n;
+                    })
+                    .scan((a, b) -> {
+                        return a + b;
+                    })
+                    .toBlocking().forEach(r -> {
+                        System.out.println(r);
+                        body[0] = r;
+                    }
+            );
+
+            System.out.println(body[0]);
+            return body[0];
+        });
+
         get("/recipe_detail/:id", (req, res) -> {
 //            String recipeId = req.params(":id");
 //            Observable<Recipe> recipe = getRecipe(recipeId);

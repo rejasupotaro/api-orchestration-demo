@@ -1,5 +1,6 @@
 package com.example.spark.resources;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import rx.Observable;
 
 import java.util.ArrayList;
@@ -8,12 +9,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class Video {
-    public Observable<Metadata> getMetadata() {
-        return Observable.create(observer -> {
-
-        });
-    }
-
-    public static class Metadata extends HashMap<String, String> {
-    }
+    @JsonProperty("id") private String id;
+    @JsonProperty("title") private String title;
 }
