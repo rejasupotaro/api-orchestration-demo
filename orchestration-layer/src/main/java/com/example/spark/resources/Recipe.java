@@ -1,6 +1,6 @@
 package com.example.spark.resources;
 
-public class Recipe {
+public class Recipe extends Resource {
     private int id;
     private String videoId;
 

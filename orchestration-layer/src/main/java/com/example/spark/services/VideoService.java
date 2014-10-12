@@ -12,7 +12,7 @@ import java.io.IOException;
 public class VideoService {
     public static Observable<Video> get(String recipeId) {
         return Observable.create(observer -> {
-            Video video = getVideoFromNetwork(recipeId);
+            Video video = new Video();//getVideoFromNetwork(recipeId);
             observer.onNext(video);
             observer.onCompleted();
         });
