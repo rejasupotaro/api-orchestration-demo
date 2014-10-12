@@ -27,23 +27,23 @@ public final class App {
             }
         });
 
-        server.start();
-
-        RxNetty.createHttpGet("http://localhost:8080/")
-                .flatMap(response -> response.getContent())
-                .map(data -> "Client => " + data.toString(Charset.defaultCharset()))
-                .toBlocking().forEach(System.out::println);
-
-        RxNetty.createHttpGet("http://localhost:8080/error")
-                .flatMap(response -> response.getContent())
-                .map(data -> "Client => " + data.toString(Charset.defaultCharset()))
-                .toBlocking().forEach(System.out::println);
-
-        RxNetty.createHttpGet("http://localhost:8080/data")
-                .flatMap(response -> response.getContent())
-                .map(data -> "Client => " + data.toString(Charset.defaultCharset()))
-                .toBlocking().forEach(System.out::println);
-
-        server.shutdown();
+        server.startAndWait();
+//
+//        RxNetty.createHttpGet("http://localhost:8080/")
+//                .flatMap(response -> response.getContent())
+//                .map(data -> "Client => " + data.toString(Charset.defaultCharset()))
+//                .toBlocking().forEach(System.out::println);
+//
+//        RxNetty.createHttpGet("http://localhost:8080/error")
+//                .flatMap(response -> response.getContent())
+//                .map(data -> "Client => " + data.toString(Charset.defaultCharset()))
+//                .toBlocking().forEach(System.out::println);
+//
+//        RxNetty.createHttpGet("http://localhost:8080/data")
+//                .flatMap(response -> response.getContent())
+//                .map(data -> "Client => " + data.toString(Charset.defaultCharset()))
+//                .toBlocking().forEach(System.out::println);
+//
+//        server.shutdown();
     }
 }
