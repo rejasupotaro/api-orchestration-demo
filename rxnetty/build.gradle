@@ -13,4 +13,4 @@ dependencies {
     compile 'com.netflix.rxnetty:rx-netty:0.3.14'
 }
 
-mainClassName = "com.example.rxnetty.App"
+mainClassName = "com.example.rxnetty.Config"
