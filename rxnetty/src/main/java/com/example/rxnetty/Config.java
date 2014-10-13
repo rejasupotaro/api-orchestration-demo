@@ -17,7 +17,7 @@ public final class Config {
         HttpServer<ByteBuf, ByteBuf> server = RxNetty.createHttpServer(PORT, (request, response) -> {
             try {
                 RequestHandler<ByteBuf, ByteBuf> route = null;
-                route = APPLICATION.match(request.getPath());
+                route = APPLICATION.match(request);
                 return route.handle(request, response);
             } catch (RouteNotFoundException e) {
                 return APPLICATION.routeMissing(request, response);
