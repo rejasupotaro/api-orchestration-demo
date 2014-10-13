@@ -6,7 +6,7 @@ public class Application extends RxNettyApplication {
     @Override
     public void run() {
         get("/", (req, res) -> {
-            String body = HttpProxy.get("http://localhost.com:3000/users/1")
+            String body = HttpProxy.get("http://localhost:3000/users/1")
                     .flatMap(r -> r.getContent())
                     .map(b -> "Client => " + b.toString(Charset.defaultCharset()))
                     .toBlocking().first();
