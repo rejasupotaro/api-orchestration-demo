@@ -11,6 +11,7 @@ public final class Config {
 
     public static void main(String... args) throws InterruptedException {
         APPLICATION.run();
+        APPLICATION.afterInitialized();
 
         HttpServer<ByteBuf, ByteBuf> server = RxNetty.createHttpServer(PORT, (request, response) -> {
             RequestHandler<ByteBuf, ByteBuf> route = APPLICATION.match(request.getPath());

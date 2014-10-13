@@ -9,7 +9,7 @@ import rx.Observable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RxNettyApplication {
+public abstract class RxNettyApplication {
     private Map<String, RequestHandler<ByteBuf, ByteBuf>> routes = new HashMap<>();
 
     protected Observable<Void> close(HttpServerResponse res, String body) {
@@ -22,6 +22,10 @@ public class RxNettyApplication {
         routes.put(path, handler);
     }
 
+    public void showRoutes() {
+        routes.keySet().forEach(System.out::println);
+    }
+
     public RequestHandler<ByteBuf, ByteBuf> match(String uri) {
         RequestHandler<ByteBuf, ByteBuf> handler = routes.get(uri);
         if (handler == null) {
@@ -29,4 +33,7 @@ public class RxNettyApplication {
         }
         return handler;
     }
+
+    public abstract void run();
+    public abstract void afterInitialized();
 }

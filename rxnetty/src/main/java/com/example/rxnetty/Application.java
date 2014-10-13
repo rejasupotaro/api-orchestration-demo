@@ -3,6 +3,7 @@ package com.example.rxnetty;
 import java.nio.charset.Charset;
 
 public class Application extends RxNettyApplication {
+    @Override
     public void run() {
         get("/", (req, res) -> {
             String body = HttpProxy.get("http://localhost.com:3000/users/1")
@@ -12,5 +13,10 @@ public class Application extends RxNettyApplication {
 
             return close(res, body);
         });
+    }
+
+    @Override
+    public void afterInitialized() {
+        showRoutes();
     }
 }
