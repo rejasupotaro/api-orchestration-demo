@@ -2,6 +2,7 @@ package com.example.rxnetty;
 
 import com.example.rxnetty.exceptions.RouteNotFoundException;
 import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.netty.protocol.http.server.HttpServerRequest;
@@ -16,6 +17,7 @@ public abstract class RxNettyApplication {
 
     protected Observable<Void> close(HttpServerResponse res, String body) {
         res.setStatus(HttpResponseStatus.OK);
+        res.getHeaders().add(HttpHeaders.Names.CONTENT_TYPE, "application/json");
         res.writeString(body);
         return res.close();
     }
@@ -34,6 +36,10 @@ public abstract class RxNettyApplication {
                         put(method, handler);
                     }});
         }
+    }
+
+    protected String[] getParamAsArray(HttpServerRequest<ByteBuf> req, String key) {
+        return req.getQueryParameters().get(key).get(0).split(",");
     }
 
     public Observable<Void> routeMissing(HttpServerRequest<ByteBuf> req, HttpServerResponse<ByteBuf> res) {
