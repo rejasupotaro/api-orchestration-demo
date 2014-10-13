@@ -4,9 +4,9 @@ This repository is demo of API Orchestration.
 
 ## Start Servers
 
-Run command `foreman start`, start orchestration server (RxNetty) on localhost:8080 and start RESTful API server on localhost:3000.
+Run command `foreman start`, start orchestration server (RxNetty) on localhost:8080 and start RESTful API server (Ruby on Rails) on localhost:3000.
 
-```
+```sh
 $ foreman start
 11:34:49 rest.1    | started with pid 8288
 11:34:49 rxnetty.1 | started with pid 8289
