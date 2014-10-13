@@ -6,7 +6,6 @@ import io.reactivex.netty.protocol.http.server.HttpServer;
 import io.reactivex.netty.protocol.http.server.RequestHandler;
 
 public final class Config {
-    public static final String PROXY_HOST = "http://localhost:3000";
     private static final int PORT = 8080;
     private static final Application APPLICATION = new Application();
 
