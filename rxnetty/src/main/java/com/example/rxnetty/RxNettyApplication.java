@@ -1,7 +1,10 @@
 package com.example.rxnetty;
 
+import com.example.rxnetty.exceptions.RouteNotFoundException;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.netty.RxNetty;
+import io.reactivex.netty.protocol.http.server.HttpServerRequest;
 import io.reactivex.netty.protocol.http.server.HttpServerResponse;
 import io.reactivex.netty.protocol.http.server.RequestHandler;
 import rx.Observable;
@@ -22,14 +25,18 @@ public abstract class RxNettyApplication {
         routes.put(path, handler);
     }
 
+    public Observable<Void> routeMissing(HttpServerRequest<ByteBuf> req, HttpServerResponse<ByteBuf> res) {
+        throw new RuntimeException("routeMissing is not implemented");
+    }
+
     public void showRoutes() {
         routes.keySet().forEach(System.out::println);
     }
 
-    public RequestHandler<ByteBuf, ByteBuf> match(String uri) {
+    public RequestHandler<ByteBuf, ByteBuf> match(String uri) throws RouteNotFoundException {
         RequestHandler<ByteBuf, ByteBuf> handler = routes.get(uri);
         if (handler == null) {
-            throw new RuntimeException(uri + " is not found");
+            throw new RouteNotFoundException(uri + " is not found");
         }
         return handler;
     }
