@@ -38,8 +38,12 @@ public abstract class RxNettyApplication {
         }
     }
 
+    protected String getParam(HttpServerRequest<ByteBuf> req, String key) {
+        return req.getQueryParameters().get(key).get(0);
+    }
+
     protected String[] getParamAsArray(HttpServerRequest<ByteBuf> req, String key) {
-        return req.getQueryParameters().get(key).get(0).split(",");
+        return getParam(req, key).split(",");
     }
 
     public Observable<Void> routeMissing(HttpServerRequest<ByteBuf> req, HttpServerResponse<ByteBuf> res) {
