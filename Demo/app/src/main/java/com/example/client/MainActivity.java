@@ -56,6 +56,12 @@ public class MainActivity extends Activity {
         InputHistoryManager.write(this, inputHistories);
     }
 
+    private void clearInputHistories() {
+        InputHistoryManager.clear(this);
+        inputHistoryAdapter.clear();
+        inputHistoryAdapter.notifyDataSetChanged();
+    }
+
     private Action1<List<String>> setupInputHistoryAdapter = new Action1<List<String>>() {
         @Override
         public void call(List<String> t) {
@@ -114,7 +120,8 @@ public class MainActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_clear) {
+            clearInputHistories();
             return true;
         }
         return super.onOptionsItemSelected(item);

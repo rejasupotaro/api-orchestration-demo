@@ -37,6 +37,13 @@ public class InputHistoryManager {
         editor.apply();
     }
 
+    public static void clear(Context context) {
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove(PREFS_KEY_INPUT_HISTORIES);
+        editor.apply();
+    }
+
     private static String serialize(List<String> inputHistories) {
         StringBuilder builder = new StringBuilder();
         for (String text : inputHistories) {
