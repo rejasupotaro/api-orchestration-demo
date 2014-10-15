@@ -15,7 +15,7 @@ import java.util.HashMap;
 public abstract class RxNettyApplication {
     private HashMap<String, HashMap<HttpMethod, RequestHandler<ByteBuf, ByteBuf>>> routes = new HashMap<>();
 
-    protected Observable<Void> close(HttpServerResponse res, String body) {
+    protected Observable close(HttpServerResponse res, String body) {
         res.setStatus(HttpResponseStatus.OK);
         res.getHeaders().add(HttpHeaders.Names.CONTENT_TYPE, "application/json");
         res.writeString(body);
@@ -51,6 +51,8 @@ public abstract class RxNettyApplication {
     }
 
     public void showRoutes() {
+        System.out.println("=> Booting Orchestration Layer");
+        System.out.println("=> RxNetty application starting on http://0.0.0.0:8080");
         for (String path : routes.keySet()) {
             for (HttpMethod method : routes.get(path).keySet()) {
                 System.out.println(method.name() + " " + path);
