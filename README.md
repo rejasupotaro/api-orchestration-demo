@@ -33,3 +33,13 @@ $ foreman start
 03:08:34 rxnetty.1 | 03:08:34 rxnetty.1 | GET /users
 03:08:34 rxnetty.1 | 03:08:34 rxnetty.1 | GET /recipe
 ```
+
+## Install Android Demo App
+
+```
+$ cd android-client
+$ ./gradlew assemble
+$ adb install app/build/outputs/apk/app-debug.apk
+```
+
+<img src="images/android-client.png" width="300px">
