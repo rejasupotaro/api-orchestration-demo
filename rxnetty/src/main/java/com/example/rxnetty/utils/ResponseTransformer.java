@@ -8,12 +8,8 @@ import java.nio.charset.Charset;
 
 public class ResponseTransformer {
     public static JSONObject toJson(ByteBuf b) {
-        if (b.refCnt() == 0) {
-            return new JSONObject();
-        }
         try {
             String json = b.toString(Charset.defaultCharset());
-            System.out.println("b: " + json);
             return new JSONObject(json);
         } catch (JSONException e) {
             return new JSONObject();
