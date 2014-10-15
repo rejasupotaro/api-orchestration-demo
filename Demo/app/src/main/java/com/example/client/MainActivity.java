@@ -5,8 +5,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.URLUtil;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -17,8 +22,11 @@ import rx.schedulers.Schedulers;
 
 
 public class MainActivity extends Activity {
+    private List<String> inputHistory = new ArrayList<>();
+    private ArrayAdapter<String> inputHistoryAdapter;
+
     @InjectView(R.id.url_text)
-    TextView urlTextView;
+    AutoCompleteTextView urlTextView;
     @InjectView(R.id.output_text)
     TextView outputTextView;
 
@@ -27,6 +35,12 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+
+        inputHistoryAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_dropdown_item_1line,
+                inputHistory);
+        urlTextView.setAdapter(inputHistoryAdapter);
     }
 
     @OnClick(R.id.submit_button)
@@ -35,6 +49,12 @@ public class MainActivity extends Activity {
         if (!URLUtil.isHttpUrl(url)) {
             return;
         }
+
+        inputHistoryAdapter.add(url);
+        inputHistoryAdapter.notifyDataSetChanged();
+
+        urlTextView.setText("");
+        outputTextView.setText("Connecting...");
 
         ApiClient.createGetRequest(url)
                 .subscribeOn(Schedulers.newThread())

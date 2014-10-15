@@ -36,9 +36,16 @@ public class ApiClient {
                 .build();
 
         Response response = client.newCall(request).execute();
-        String body = response.body().string();
-        return body.startsWith("{")
-                ? new JSONObject(body).toString(4)
-                : new JSONArray(body).toString(4);
+        return format(response.body().string());
+    }
+
+    private static String format(String str) throws JSONException {
+        if (str.startsWith("{")) {
+            return new JSONObject(str).toString(4);
+        } else if (str.startsWith("[")) {
+            return new JSONArray(str).toString(4);
+        } else {
+            return str;
+        }
     }
 }
