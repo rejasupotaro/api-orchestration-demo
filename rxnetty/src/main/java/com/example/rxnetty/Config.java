@@ -1,5 +1,7 @@
 package com.example.rxnetty;
 
+import com.example.rxnetty.app.Application;
+import com.example.rxnetty.app.RxNettyApplication;
 import com.example.rxnetty.exceptions.RouteNotFoundException;
 import io.netty.buffer.ByteBuf;
 import io.reactivex.netty.RxNetty;

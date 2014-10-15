@@ -1,4 +1,4 @@
-package com.example.rxnetty.utils;
+package com.example.rxnetty.http;
 
 import io.netty.buffer.ByteBuf;
 import org.json.JSONException;

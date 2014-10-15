@@ -1,4 +1,4 @@
-package com.example.rxnetty;
+package com.example.rxnetty.http;
 
 import io.netty.buffer.ByteBuf;
 import io.reactivex.netty.RxNetty;

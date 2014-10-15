@@ -1,4 +1,4 @@
-package com.example.rxnetty;
+package com.example.rxnetty.app;
 
 import com.example.rxnetty.exceptions.RouteNotFoundException;
 import io.netty.buffer.ByteBuf;

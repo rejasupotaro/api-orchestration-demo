@@ -1,7 +1,8 @@
-package com.example.rxnetty;
+package com.example.rxnetty.app;
 
+import com.example.rxnetty.http.HttpProxy;
 import com.example.rxnetty.utils.JsonUtils;
-import com.example.rxnetty.utils.ResponseTransformer;
+import com.example.rxnetty.http.ResponseTransformer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
