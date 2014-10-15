@@ -2,6 +2,7 @@ package com.example.client;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.URLUtil;
@@ -16,13 +17,9 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
-
 
 public class MainActivity extends Activity {
-    private List<String> inputHistory = new ArrayList<>();
     private ArrayAdapter<String> inputHistoryAdapter;
 
     @InjectView(R.id.url_text)
@@ -35,13 +32,40 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
-
-        inputHistoryAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_dropdown_item_1line,
-                inputHistory);
-        urlTextView.setAdapter(inputHistoryAdapter);
+        readInputHistories();
     }
+
+    @Override
+    public void onStop() {
+        saveInputHistories();
+        super.onStop();
+    }
+
+    private void readInputHistories() {
+        InputHistoryManager.read(this).subscribe(setupInputHistoryAdapter);
+    }
+
+    private void saveInputHistories() {
+        List<String> inputHistories = new ArrayList<>();
+        for (int i = 0; i < inputHistoryAdapter.getCount(); i++) {
+            String item = inputHistoryAdapter.getItem(i).trim();
+            if (!TextUtils.isEmpty(item)) {
+                inputHistories.add(item);
+            }
+        }
+        InputHistoryManager.write(this, inputHistories);
+    }
+
+    private Action1<List<String>> setupInputHistoryAdapter = new Action1<List<String>>() {
+        @Override
+        public void call(List<String> t) {
+            inputHistoryAdapter = new ArrayAdapter<>(
+                    MainActivity.this,
+                    android.R.layout.simple_dropdown_item_1line,
+                    t);
+            urlTextView.setAdapter(inputHistoryAdapter);
+        }
+    };
 
     @OnClick(R.id.submit_button)
     void onSubmitButtonClick() {
@@ -50,15 +74,15 @@ public class MainActivity extends Activity {
             return;
         }
 
-        inputHistoryAdapter.add(url);
-        inputHistoryAdapter.notifyDataSetChanged();
+        if (inputHistoryAdapter != null) {
+            inputHistoryAdapter.add(url);
+            inputHistoryAdapter.notifyDataSetChanged();
+        }
 
         urlTextView.setText("");
         outputTextView.setText("Connecting...");
 
         ApiClient.createGetRequest(url)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(handleError)
                 .subscribe(updateOutputText);
     }

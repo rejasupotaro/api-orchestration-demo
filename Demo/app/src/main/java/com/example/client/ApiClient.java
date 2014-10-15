@@ -12,7 +12,8 @@ import java.io.IOException;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.exceptions.OnErrorNotImplementedException;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class ApiClient {
     private static final OkHttpClient client = new OkHttpClient();
@@ -27,7 +28,9 @@ public class ApiClient {
                     subscriber.onError(e);
                 }
             }
-        });
+        })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public static String get(String url) throws IOException, JSONException {
