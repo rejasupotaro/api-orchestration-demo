@@ -5,18 +5,22 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.URLUtil;
-import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 
 public class MainActivity extends Activity {
-    @InjectView(R.id.url_text) TextView urlTextView;
-    @InjectView(R.id.submit_button) Button submitButton;
-    @InjectView(R.id.output_text) TextView outputTextView;
+    @InjectView(R.id.url_text)
+    TextView urlTextView;
+    @InjectView(R.id.output_text)
+    TextView outputTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,14 +31,31 @@ public class MainActivity extends Activity {
 
     @OnClick(R.id.submit_button)
     void onSubmitButtonClick() {
-        String url = urlTextView.getText().toString();
+        final String url = urlTextView.getText().toString();
         if (!URLUtil.isHttpUrl(url)) {
             return;
-
         }
 
-        outputTextView.setText(outputTextView.getText() + " " + url);
+        ApiClient.createGetRequest(url)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(handleError)
+                .subscribe(updateOutputText);
     }
+
+    private Action1<Throwable> handleError = new Action1<Throwable>() {
+        @Override
+        public void call(Throwable throwable) {
+            Toast.makeText(MainActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private Action1<String> updateOutputText = new Action1<String>() {
+        @Override
+        public void call(String output) {
+            outputTextView.setText(output);
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

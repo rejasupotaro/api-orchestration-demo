@@ -17,6 +17,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
 }
 
 dependencies {
@@ -24,4 +28,7 @@ dependencies {
     compile 'info.hoang8f:fbutton:1.0.5'
     compile 'com.jakewharton:butterknife:5.1.2'
     compile 'com.squareup.okhttp:okhttp:2.0.0'
+    compile 'com.netflix.rxjava:rxjava-core:0.20.5'
+    compile 'com.netflix.rxjava:rxjava-android:0.20.5'
+
 }
