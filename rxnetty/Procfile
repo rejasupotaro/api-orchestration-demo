@@ -1,1 +1,1 @@
-jetty: ./gradlew run
+rxnetty: ./gradlew run
