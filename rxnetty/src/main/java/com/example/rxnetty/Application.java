@@ -1,10 +1,9 @@
 package com.example.rxnetty;
 
-import com.example.rxnetty.utils.ResponseUtils;
-import io.netty.buffer.ByteBuf;
-import io.reactivex.netty.protocol.http.client.HttpClientResponse;
+import com.example.rxnetty.utils.ResponseTransformer;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import rx.Observable;
 
 public class Application extends RxNettyApplication {
@@ -14,12 +13,12 @@ public class Application extends RxNettyApplication {
             String[] ids = getParamAsArray(req, "ids");
 
             String body = Observable.from(ids)
-                    .flatMap(n -> HttpProxy.get("http://localhost:3000/users/" + n))
+                    .flatMap(s -> HttpProxy.get("http://localhost:3000/users/" + s))
                     .flatMap(r -> r.getContent())
-                    .map(ResponseUtils::toJson)
-                    .reduce(new JSONArray(), (a, b) -> {
-                        a.put(b);
-                        return a;
+                    .map(ResponseTransformer::toJson)
+                    .reduce(new JSONArray(), (t1, t2) -> {
+                        t1.put(t2);
+                        return t1;
                     })
                     .map(JSONArray::toString)
                     .toBlocking().first();
@@ -29,29 +28,23 @@ public class Application extends RxNettyApplication {
 
         get("/recipes", (req, res) -> {
             String id = getParam(req, "id");
-            String body = HttpProxy.get("http://localhost:3000/recipes/" + id)
-                    .flatMap(r -> r.getContent())
-                    .map(ResponseUtils::toJson)
-                    .flatMap(b -> {
-                        Observable<HttpClientResponse<ByteBuf>> videos = HttpProxy.get("http://localhost:3000/recipes/" + id);
-                        Observable<HttpClientResponse<ByteBuf>> bookmarkTags = HttpProxy.get("http://localhost:3000/recipes/" + id);
 
-                        return Observable.zip(videos, bookmarkTags, (vs, bs) -> {
-                            try {
-                                b.put("video", vs.getContent()
-                                        .map(ResponseUtils::toJson)
-                                        .toBlocking().first());
-                                b.put("bookmark_tag", bs.getContent()
-                                        .map(ResponseUtils::toJson)
-                                        .toBlocking().first());
-                            } catch (JSONException e) {
-                                // ignore
-                            }
-                            return b;
-                        })
-                                .reduce(new JSONArray(), (l, r) -> l.put(r))
-                                .map(JSONArray::toString);
-                    }).toBlocking().first();
+            Observable<JSONObject> recipe = HttpProxy.get("http://localhost:3000/users/" + id)
+                    .flatMap(r -> r.getContent()).map(ResponseTransformer::toJson);
+            Observable<JSONObject> bookmarkTag = HttpProxy.get("http://localhost:3000/users/" + id)
+                    .flatMap(r -> r.getContent()).map(ResponseTransformer::toJson);
+            Observable<JSONObject> video = HttpProxy.get("http://localhost:3000/users/" + id)
+                    .flatMap(r -> r.getContent()).map(ResponseTransformer::toJson);
+
+            String body = Observable.zip(recipe, bookmarkTag, video, (r, b, v) -> {
+                try {
+                    r.put("bookmark_tag", b);
+                    r.put("video", v);
+                } catch (JSONException e) {
+                    // ignore
+                }
+                return r;
+            }).map(JSONObject::toString).toBlocking().first();
 
             return close(res, body);
         });

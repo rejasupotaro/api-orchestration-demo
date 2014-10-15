@@ -6,10 +6,15 @@ import org.json.JSONObject;
 
 import java.nio.charset.Charset;
 
-public class ResponseUtils {
+public class ResponseTransformer {
     public static JSONObject toJson(ByteBuf b) {
+        if (b.refCnt() == 0) {
+            return new JSONObject();
+        }
         try {
-            return new JSONObject(b.toString(Charset.defaultCharset()));
+            String json = b.toString(Charset.defaultCharset());
+            System.out.println("b: " + json);
+            return new JSONObject(json);
         } catch (JSONException e) {
             return new JSONObject();
         }
