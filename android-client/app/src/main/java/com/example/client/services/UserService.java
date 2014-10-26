@@ -10,6 +10,8 @@ import retrofit.http.Query;
 import rx.Observable;
 
 public interface UserService {
+    public static final String ENDPOINT = "http://192.168.3.12:8080";
+
     @GET("/users/{user}")
     Observable<User> getUser(@Path("user") String id);
 

@@ -4,7 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import java.util.Arrays;
+import com.example.client.utils.StringUtils;
+
 import java.util.List;
 
 import rx.Observable;
@@ -20,7 +21,8 @@ public class InputHistoryManager {
         return Observable.create(new Observable.OnSubscribe<List<String>>() {
             @Override
             public void call(Subscriber<? super List<String>> subscriber) {
-                List<String> inputHistories = deserialize(prefs.getString(PREFS_KEY_INPUT_HISTORIES, ""));
+                String serializedInputHistories = prefs.getString(PREFS_KEY_INPUT_HISTORIES, "");
+                List<String> inputHistories = StringUtils.deserialize(serializedInputHistories);
                 subscriber.onNext(inputHistories);
             }
         })
@@ -31,7 +33,8 @@ public class InputHistoryManager {
     public static void write(Context context, List<String> inputHistories) {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(PREFS_KEY_INPUT_HISTORIES, serialize(inputHistories));
+        editor.clear();
+        editor.putString(PREFS_KEY_INPUT_HISTORIES, StringUtils.serialize(inputHistories));
         editor.apply();
     }
 
@@ -40,17 +43,5 @@ public class InputHistoryManager {
         SharedPreferences.Editor editor = prefs.edit();
         editor.remove(PREFS_KEY_INPUT_HISTORIES);
         editor.apply();
-    }
-
-    private static String serialize(List<String> inputHistories) {
-        StringBuilder builder = new StringBuilder();
-        for (String text : inputHistories) {
-            builder.append(text).append(",");
-        }
-        return builder.substring(0, builder.length() - 1);
-    }
-
-    private static List<String> deserialize(String serializedText) {
-        return Arrays.asList(serializedText.split(","));
     }
 }

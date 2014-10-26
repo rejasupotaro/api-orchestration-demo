@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
         ButterKnife.inject(this);
         readInputHistories();
 
-        ServiceProvider.get(UserService.class, "http://192.168.3.12:8080")
+        ServiceProvider.get(UserService.class, UserService.ENDPOINT)
                 .subscribe(new Action1<UserService>() {
                     @Override
                     public void call(UserService userService) {
@@ -108,6 +108,7 @@ public class MainActivity extends Activity {
                     android.R.layout.simple_dropdown_item_1line,
                     t);
             urlTextView.setAdapter(inputHistoryAdapter);
+            inputHistoryAdapter.notifyDataSetChanged();
         }
     };
 
@@ -126,7 +127,7 @@ public class MainActivity extends Activity {
         urlTextView.setText("");
         outputTextView.setText("Connecting...");
 
-        ApiClient.createGetRequest(url)
+        ServiceProvider.createGetRequest(url)
                 .doOnError(handleError)
                 .subscribe(updateOutputText);
     }
@@ -147,16 +148,12 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_clear) {
             clearInputHistories();
