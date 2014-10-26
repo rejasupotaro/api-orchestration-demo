@@ -1,7 +1,7 @@
 package com.example.client;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -26,7 +26,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private ArrayAdapter<String> inputHistoryAdapter;
@@ -97,7 +97,6 @@ public class MainActivity extends Activity {
     private void clearInputHistories() {
         InputHistoryManager.clear(this);
         inputHistoryAdapter.clear();
-        inputHistoryAdapter.notifyDataSetChanged();
     }
 
     private Action1<List<String>> setupInputHistoryAdapter = new Action1<List<String>>() {

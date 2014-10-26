@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class StringUtils {
         return builder.substring(0, builder.length() - 1);
     }
 
-    public static List<String> deserialize(String serializedText) {
-        return Arrays.asList(serializedText.split(","));
+    public static ArrayList<String> deserialize(String serializedText) {
+        return new ArrayList<>(Arrays.asList(serializedText.split(",")));
     }
 }
