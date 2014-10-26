@@ -12,10 +12,15 @@ public class Application extends RxNettyApplication {
     @Override
     public void run() {
         get("/users", (req, res) -> {
+            HttpProxy proxy = new HttpProxy(req, res);
+            req.getHeaders().names().forEach(System.out::println);
+            System.out.println(req.getHeaders().getHeader("Authorization"));
+            System.out.println(req.getHeaders().get("Authorization"));
+
             String[] ids = getParamAsArray(req, "ids");
 
             String body = Observable.from(ids)
-                    .flatMap(s -> HttpProxy.get("http://localhost:3000/users/" + s))
+                    .flatMap(s -> proxy.get("http://localhost:3000/users/" + s))
                     .flatMap(r -> r.getContent())
                     .map(ResponseTransformer::toJson)
                     .reduce(new JSONArray(), (t1, t2) -> {
@@ -29,15 +34,17 @@ public class Application extends RxNettyApplication {
         });
 
         get("/top_page", (req, res) -> {
+            HttpProxy proxy = new HttpProxy(req, res);
+
             String recipeId = getParam(req, "recipe_id");
             String bookmarkTagId = getParam(req, "video_id");
             String videoId = getParam(req, "video_id");
 
-            Observable<JSONObject> recipe = HttpProxy.get("http://localhost:3000/recipes/" + recipeId)
+            Observable<JSONObject> recipe = proxy.get("http://localhost:3000/recipes/" + recipeId)
                     .flatMap(r -> r.getContent()).map(ResponseTransformer::toJson);
-            Observable<JSONObject> bookmarkTag = HttpProxy.get("http://localhost:3000/bookmark_tags/" + bookmarkTagId)
+            Observable<JSONObject> bookmarkTag = proxy.get("http://localhost:3000/bookmark_tags/" + bookmarkTagId)
                     .flatMap(r -> r.getContent()).map(ResponseTransformer::toJson);
-            Observable<JSONObject> video = HttpProxy.get("http://localhost:3000/videos/" + videoId)
+            Observable<JSONObject> video = proxy.get("http://localhost:3000/videos/" + videoId)
                     .flatMap(r -> r.getContent()).map(ResponseTransformer::toJson);
 
             String body = Observable.zip(recipe, bookmarkTag, video, (r, b, v) -> {
@@ -56,9 +63,11 @@ public class Application extends RxNettyApplication {
         });
 
         get("/recipe", (req, res) -> {
+            HttpProxy proxy = new HttpProxy(req, res);
+
             String id = getParam(req, "id");
 
-            Observable<JSONObject> recipe = HttpProxy.get("http://localhost:3000/users/" + id)
+            Observable<JSONObject> recipe = proxy.get("http://localhost:3000/users/" + id)
                     .flatMap(r -> r.getContent()).map(ResponseTransformer::toJson);
 
             String body = recipe
@@ -66,9 +75,9 @@ public class Application extends RxNettyApplication {
                         String bookmarkTagId = JsonUtils.get(json, "bookmark_tag_id");
                         String videoId = JsonUtils.get(json, "video_id");
 
-                        Observable<JSONObject> bookmarkTag = HttpProxy.get("http://localhost:3000/bookmark_tags/" + bookmarkTagId)
+                        Observable<JSONObject> bookmarkTag = proxy.get("http://localhost:3000/bookmark_tags/" + bookmarkTagId)
                                 .flatMap(r -> r.getContent()).map(ResponseTransformer::toJson);
-                        Observable<JSONObject> video = HttpProxy.get("http://localhost:3000/videos/" + videoId)
+                        Observable<JSONObject> video = proxy.get("http://localhost:3000/videos/" + videoId)
                                 .flatMap(r -> r.getContent()).map(ResponseTransformer::toJson);
 
                         return Observable.zip(bookmarkTag, video, (b, v) -> {

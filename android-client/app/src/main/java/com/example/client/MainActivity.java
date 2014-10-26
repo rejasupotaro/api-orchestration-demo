@@ -43,11 +43,11 @@ public class MainActivity extends Activity {
         ButterKnife.inject(this);
         readInputHistories();
 
-        ServiceProvider.get(UserService.class, "http://192.168.3.12:3000")
+        ServiceProvider.get(UserService.class, "http://192.168.3.12:8080")
                 .subscribe(new Action1<UserService>() {
                     @Override
                     public void call(UserService userService) {
-                        userService.get(1)
+                        userService.getUsers("1,2")
                                 .subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnError(new Action1<Throwable>() {
@@ -56,10 +56,17 @@ public class MainActivity extends Activity {
                                         Log.e(TAG, throwable.getMessage());
                                     }
                                 })
-                                .subscribe(new Action1<User>() {
+                                .subscribe(new Action1<List<User>>() {
                                     @Override
-                                    public void call(User user) {
-                                        Log.e(TAG, "id: " + user.getId() + ", name: " + user.getName());
+                                    public void call(List<User> users) {
+                                        for (User user : users) {
+                                            Log.e(TAG, "id: " + user.getId() + ", name: " + user.getName());
+                                        }
+                                    }
+                                }, new Action1<Throwable>() {
+                                    @Override
+                                    public void call(Throwable throwable) {
+                                        Log.e(TAG, throwable.getMessage());
                                     }
                                 });
                     }
