@@ -66,4 +66,4 @@ $ ./gradlew assemble
 $ adb install app/build/outputs/apk/app-debug.apk
 ```
 
-<img src="images/android-client.png" width="300px">
+<img src="images/android_client.png" width="300px">
