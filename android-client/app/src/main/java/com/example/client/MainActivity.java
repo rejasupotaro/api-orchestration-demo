@@ -3,6 +3,7 @@ package com.example.client;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.URLUtil;
@@ -11,15 +12,23 @@ import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.client.models.User;
+import com.example.client.services.ServiceProvider;
+import com.example.client.services.UserService;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends Activity {
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     private ArrayAdapter<String> inputHistoryAdapter;
 
     @InjectView(R.id.url_text)
@@ -33,6 +42,28 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
         readInputHistories();
+
+        ServiceProvider.get(UserService.class, "http://192.168.3.12:3000")
+                .subscribe(new Action1<UserService>() {
+                    @Override
+                    public void call(UserService userService) {
+                        userService.get(1)
+                                .subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnError(new Action1<Throwable>() {
+                                    @Override
+                                    public void call(Throwable throwable) {
+                                        Log.e(TAG, throwable.getMessage());
+                                    }
+                                })
+                                .subscribe(new Action1<User>() {
+                                    @Override
+                                    public void call(User user) {
+                                        Log.e(TAG, "id: " + user.getId() + ", name: " + user.getName());
+                                    }
+                                });
+                    }
+                });
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.example.client;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +20,6 @@ public class InputHistoryManager {
         return Observable.create(new Observable.OnSubscribe<List<String>>() {
             @Override
             public void call(Subscriber<? super List<String>> subscriber) {
-                Log.e("debugging", "call");
                 List<String> inputHistories = deserialize(prefs.getString(PREFS_KEY_INPUT_HISTORIES, ""));
                 subscriber.onNext(inputHistories);
             }
