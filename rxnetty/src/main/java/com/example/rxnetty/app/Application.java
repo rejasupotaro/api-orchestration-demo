@@ -13,9 +13,6 @@ public class Application extends RxNettyApplication {
     public void run() {
         get("/users", (req, res) -> {
             HttpProxy proxy = new HttpProxy(req, res);
-            req.getHeaders().names().forEach(System.out::println);
-            System.out.println(req.getHeaders().getHeader("Authorization"));
-            System.out.println(req.getHeaders().get("Authorization"));
 
             String[] ids = getParamAsArray(req, "ids");
 

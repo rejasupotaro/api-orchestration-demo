@@ -1,7 +1,6 @@
 package com.example.rxnetty.http;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.http.HttpHeaders;
 import io.reactivex.netty.RxNetty;
 import io.reactivex.netty.protocol.http.client.HttpClientRequest;
 import io.reactivex.netty.protocol.http.client.HttpClientResponse;
@@ -20,8 +19,6 @@ public class HttpProxy {
 
     public Observable<HttpClientResponse<ByteBuf>> get(String uri) {
         String authorization = req.getHeaders().getHeader("Authorization");
-        System.out.println(uri);
-        System.out.println(authorization);
         HttpClientRequest httpClientRequest = HttpClientRequest.createGet(uri);
         httpClientRequest.withHeader("Authorization", authorization);
         return RxNetty.createHttpRequest(httpClientRequest);
